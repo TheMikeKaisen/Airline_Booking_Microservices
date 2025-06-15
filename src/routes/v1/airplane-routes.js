@@ -3,7 +3,10 @@ const router = express.Router();
 
 const {AirplaneController} = require('../../controllers')
 
+// import middleware
+const {AirplaneMiddleware} = require('../../middlewares');
+
 // POST: /api/v1/airplanes
-router.post('/', AirplaneController.createAirplane)
+router.post('/',AirplaneMiddleware.validateCreateRequest, AirplaneController.createAirplane)
 
 module.exports = router;

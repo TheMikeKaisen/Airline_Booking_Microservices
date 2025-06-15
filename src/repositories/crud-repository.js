@@ -2,7 +2,7 @@ const { Logger } = require("../config");
 
 class CrudRepository{
     constructor(model){
-        this.model = model;
+        this.model = model; // you don't need to declare a model variable before in js
     }
 
     async create(data){
