@@ -46,3 +46,15 @@ Lets take a look inside the `src` folder
  ```
  npm run dev
  ```
+
+
+
+ ## System Design
+### Non-Functional Requirements
+- We can expect more flight searches than bookings
+- The system needs to be reliable in terms of booking
+- Exprect that we will be having 1,00,000 total users.
+- 1,00,000 bookings might come up in a quarter.
+- 1 day you we might be getting 100 bookings.
+- System should be able to make sure that we don't change the prices when the booking payment is going on.
+- System should be able to auto scale itself for at least 3x more traffic. 
