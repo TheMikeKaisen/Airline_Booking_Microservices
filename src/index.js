@@ -17,10 +17,9 @@ app.use('/api', apiRoutes)
 
 const {City, Airport} = require("./models")
 
+const {} = require("./repositories")
+
 app.listen(ServerConfig.PORT, () => {
     console.log(`Successfully started the server on PORT: ${ServerConfig.PORT}`)
     // Logger.info("Successfully started the server")
-
-    
-
 })
