@@ -5,20 +5,21 @@ const AppError = require("../utils/errors/app-error");
 
 async function createFlight(req, res) {
     try {
-        const flight = await FlightService.createFlight({
-            flightNumber: req.body.flightNumber,
-            airplaneId: req.body.airplaneId,
-            departureAirportId: req.body.departureAirportId,
-            arrivalAirportId: req.body.arrivalAirportId,
-            arrivalTime: req.body.arrivalTime,
-            departureTime: req.body.departureTime,
-            price: req.body.price,
-            boardingGate: req.body.boardingGate,
-            totalSeats: req.body.totalSeats,
-
-        });
+        const flights = await FlightService.getAllFlights(req.query);
         SuccessResponse.message = "Successfully created an airport";
-        SuccessResponse.data = flight
+        SuccessResponse.data = flights
+        return res.status(StatusCodes.CREATED).json(SuccessResponse);
+    } catch (error) {
+        console.log("error in controller", error)
+        ErrorResponse.error = error
+        return res.status(error.statusCode || 500).json(ErrorResponse);
+    }
+}
+
+async function getAllFlights(req, res){
+    try {
+        const flights = await FlightService.getAllFlights(req.query);
+        SuccessResponse.data = flights
         return res.status(StatusCodes.CREATED).json(SuccessResponse);
     } catch (error) {
         console.log("error in controller", error)
@@ -69,5 +70,6 @@ async function createFlight(req, res) {
 
 
 module.exports = {
-    createFlight
+    createFlight,
+    getAllFlights
 }

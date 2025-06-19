@@ -6,5 +6,6 @@ const {FlightMiddleware} = require('../../middlewares')
 
 // POST: /api/v1/airport
 router.post('/', FlightMiddleware.validateCreateRequest, FlightController.createFlight)
+router.get('/', FlightController.getAllFlights);
 
 module.exports = router;
