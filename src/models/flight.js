@@ -30,7 +30,6 @@ module.exports = (sequelize, DataTypes) => {
     airplaneId: {
       type: DataTypes.INTEGER,
       allowNull:false,
-
     },
     departureAirportId: {
       type: DataTypes.STRING,
