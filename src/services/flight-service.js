@@ -55,6 +55,7 @@ async function getAllFlights(query){
         }
     }
 
+    // travellers=2
     if(query.travellers){
         customFilter.totalSeats = {
             [Op.gte]: query.travellers,
