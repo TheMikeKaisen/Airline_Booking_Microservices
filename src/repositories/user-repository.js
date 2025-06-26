@@ -33,7 +33,7 @@ class UserRepository {
     async getById(userId) {
         try {
             const user = await User.findByPk(userId, {
-                attributes: ['email', 'id']
+                attributes: ['email', 'id'] // only provides these columns NOT PASSWORDS
             });
             return user;
         } catch (error) {
