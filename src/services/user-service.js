@@ -22,6 +22,40 @@ class UserService {
         }
     }
 
+    async signIn(email, plainPassword) {
+        try {
+            // 1. fetch the user using the email
+            const user = await this.userRepository.getByEmail(email);
+            if(user==undefined){
+                console.log("User don't exist!");
+                const error = new Error("User don't exist");
+                error.statusCode = 401; // Unauthorized
+                error.explanation = "User couldn't be found";
+                throw error;
+            }
+
+            // 2. compare incoming plain password with stores encrypted password
+            const passwordMatch = await this.checkPassword(plainPassword, user.password);
+            if (!passwordMatch) {
+                console.log("Incorrect password");
+                const error = new Error("Incorrect password");
+                error.statusCode = 401; // Unauthorized
+                error.explanation = "Password does not match the stored hash";
+                throw error;
+            }
+            
+
+            // 3. if the passwords match then create a jwt token and send it to the user
+            const newJWT = this.createToken({email: user.email, id: user.id});
+            return newJWT;
+
+            
+        } catch (error) {
+            console.log("Something went wrong in the service layer", error);
+            throw error;
+        }
+    }
+
 
     createToken(user) {
         try {
@@ -44,9 +78,9 @@ class UserService {
     }
 
 
-    checkPassword(userInputPlainPassword, hashedPassword) {
+    async checkPassword(userInputPlainPassword, hashedPassword) {
         try {
-            return bcrypt.compare(userInputPlainPassword, hashedPassword);
+            return await bcrypt.compare(userInputPlainPassword, hashedPassword);
         } catch (error) {
             console.log("Something went wrong during password comparison")
             throw error;

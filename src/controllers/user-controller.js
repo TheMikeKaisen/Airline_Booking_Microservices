@@ -2,6 +2,7 @@
 const { response } = require('express');
 const UserService = require('../services/user-service');
 const AppErrors = require('../utils/error-handler');
+const { sign } = require('jsonwebtoken');
 
 const userService = new UserService();
 
@@ -28,6 +29,28 @@ const create = async (req, res) => {
     }
 }
 
+const signIn = async(req, res) => {
+    try{
+        const response = await userService.signIn(req.body.email, req.body.password);
+        return res.status(200).json({
+            success: true,
+            message: 'Successfully signed in',
+            data: response,
+            err: {}
+        });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(error.statusCode).json({
+            message: error.message,
+            data: {},
+            success: false,
+            err: error.explanation
+        });
+    }
+}
+
 module.exports = {
-    create
+    create,
+    signIn
 }
