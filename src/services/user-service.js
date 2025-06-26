@@ -49,13 +49,45 @@ class UserService {
             const newJWT = this.createToken({email: user.email, id: user.id});
             return newJWT;
 
-            
+
         } catch (error) {
             console.log("Something went wrong in the service layer", error);
             throw error;
         }
     }
 
+    async isAuthenticated(token) {
+        try {
+            // Step 1: Verify the token
+            const decoded = this.verifyToken(token);
+            if (!decoded || !decoded.id) {
+                throw new AppError(
+                    "Invalid or expired token",
+                    401,
+                    "Authentication Failed",
+                    "The JWT token provided is either malformed or expired"
+                );
+            }
+    
+            // Step 2: Fetch user from DB using decoded ID
+            const user = await this.userRepository.getById(decoded.id);
+            if (!user) {
+                throw new AppError(
+                    "User not found",
+                    404,
+                    "Authentication Failed",
+                    "No user associated with this token exists"
+                );
+            }
+    
+            // Step 3: Success
+            return user.id;
+    
+        } catch (error) {
+            console.log("Something went wrong in isAuthenticated:", error);
+            throw error;
+        }
+    }
 
     createToken(user) {
         try {
@@ -86,6 +118,8 @@ class UserService {
             throw error;
         }
     }
+
+
 }
 
 module.exports = UserService
