@@ -4,6 +4,7 @@ const { ServerConfig } = require('./config');
 const apiRoutes = require('./routes');
 
 const UserService = require('./services/user-service');
+const db = require('./models');
 
 
 
@@ -16,4 +17,7 @@ app.use('/api', apiRoutes);
 
 app.listen(ServerConfig.PORT, () => {
     console.log(`Successfully started the server on PORT : ${ServerConfig.PORT}`);
+
+    // do this only once to sync the database to create "User_Roles" table!
+    db.sequelize.sync({alter: true})
 });
