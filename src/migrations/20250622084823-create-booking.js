@@ -1,7 +1,7 @@
 'use strict';
 
-const { Enums } = require('../utils/common');
-const { BOOKED, CANCELLED, INITIATED, PENDING } = Enums.BOOKIGN_STATUS
+const { Enums } = require('../utility/common');
+const { BOOKED, CANCELLED, INITIATED, PENDING } = Enums.BOOKING_STATUS
 /** @type {import('sequelize-cli').Migration} */
 
 
