@@ -85,21 +85,18 @@ async function getAllFlights(query){
     }
 }
 
-
-// async function updateFlight(id, data) {
-//     try {
-//         const airport = await airportRepository.update(id, data);
-//         return airport;
-//     } catch (error) {
-//         if(error.statusCode == StatusCodes.NOT_FOUND){
-//             throw new AppError("The airport you requested couldn't be found!", error.statusCode)
-//         }
-//         throw new AppError("Cannot fetch data of the aiport", StatusCodes.INTERNAL_SERVER_ERROR);
-        
-//     }
-// }
+async function getFlight(flightId) {
+    try {
+        const flight = await flightRepository.get(flightId);
+        return flight;
+    } catch (error) {
+        console.log("Error in service Layer: ", error);
+        throw new AppError(error.message || 'Cannot get a new flight object', StatusCodes.INTERNAL_SERVER_ERROR)
+    }
+}
 
 module.exports = {
     createFlight,
-    getAllFlights
+    getAllFlights,
+    getFlight
 }
