@@ -12,8 +12,8 @@ class BookingController {
 
     async create (req, res) {
         try {
+            console.log("FROM BOOKING CONTROLLER");
             const response = await bookingService.createBooking(req.body);
-            console.log("FROM BOOKING CONTROLLER", response);
             return res.status(StatusCodes.OK).json({
                 message: 'Successfully completed booking',
                 success: true,
