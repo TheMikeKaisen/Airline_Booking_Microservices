@@ -4,6 +4,8 @@ const UserRepository = require("../repositories/user-repository");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const AppErrors = require("../utils/error-handler");
+const ClientError = require("../utils/client-error");
+const { StatusCodes } = require("http-status-codes");
 
 class UserService {
     constructor() {
@@ -32,22 +34,25 @@ class UserService {
         try {
             // 1. fetch the user using the email
             const user = await this.userRepository.getByEmail(email);
+
             if(user==undefined){
-                console.log("User don't exist!");
-                const error = new Error("User don't exist");
-                error.statusCode = 401; // Unauthorized
-                error.explanation = "User couldn't be found";
-                throw error;
+                throw new ClientError(
+                    "AttributeNotFound", 
+                    "Invalid email sent in the request", 
+                    "check the email", 
+                    StatusCodes.NOT_FOUND
+                )
             }
 
             // 2. compare incoming plain password with stores encrypted password
             const passwordMatch = await this.checkPassword(plainPassword, user.password);
             if (!passwordMatch) {
-                console.log("Incorrect password");
-                const error = new Error("Incorrect password");
-                error.statusCode = 401; // Unauthorized
-                error.explanation = "Password does not match the stored hash";
-                throw error;
+                throw new ClientError(
+                    "AttibuteError", 
+                    "Password doesn't match", 
+                    "check you password", 
+                    StatusCodes.BAD_REQUEST
+                )
             }
             
 
@@ -67,23 +72,23 @@ class UserService {
             // Step 1: Verify the token
             const decoded = this.verifyToken(token);
             if (!decoded || !decoded.id) {
-                throw new AppError(
+                throw new ClientError(
+                    "TokenExpired",
                     "Invalid or expired token",
-                    401,
                     "Authentication Failed",
-                    "The JWT token provided is either malformed or expired"
+                    401,
                 );
             }
     
             // Step 2: Fetch user from DB using decoded ID
             const user = await this.userRepository.getById(decoded.id);
-            if (!user) {
-                throw new AppError(
-                    "User not found",
-                    404,
-                    "Authentication Failed",
-                    "No user associated with this token exists"
-                );
+            if(user==undefined){
+                throw new ClientError(
+                    "AttributeNotFound", 
+                    "Invalid email sent in the request", 
+                    "check the email", 
+                    StatusCodes.NOT_FOUND
+                )
             }
     
             // Step 3: Success
