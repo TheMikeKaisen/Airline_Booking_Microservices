@@ -2,7 +2,8 @@ const { ServerConfig } = require("../config");
 const { JWT_KEY } = require("../config/server-config");
 const UserRepository = require("../repositories/user-repository");
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const AppErrors = require("../utils/error-handler");
 
 class UserService {
     constructor() {
@@ -18,7 +19,12 @@ class UserService {
                 throw error;
             }
             console.log("Something went wrong in the service layer");
-            throw error;
+            throw new AppErrors(
+                "Server Error", 
+                "Something went wrong in service layer", 
+                "Logical issue found", 
+                500,
+            );
         }
     }
 
@@ -109,6 +115,8 @@ class UserService {
         }
     }
 
+    
+
 
     async checkPassword(userInputPlainPassword, hashedPassword) {
         try {
@@ -118,6 +126,17 @@ class UserService {
             throw error;
         }
     }
+
+    isAdmin(userId){
+        try {
+            return this.userRepository.isAdmin(userId);
+        } catch (error) {
+            console.log("Something went wrong in service layer!");
+            throw error;
+        }
+    }
+
+
 
 
 }
