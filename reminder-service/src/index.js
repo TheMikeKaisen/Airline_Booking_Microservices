@@ -4,6 +4,8 @@ const { ServerConfig } = require('./config');
 const apiRoutes = require('./routes');
 const { sendBasicEmail } = require('./services/email-service');
 
+const cron = require('node-cron')
+
 const app = express();
 
 app.use(express.json());
@@ -19,4 +21,8 @@ app.listen(ServerConfig.PORT, () => {
     //     "ore wa saikyoo dakara!"
         
     // )
+    
+cron.schedule('*/2 * * * *', () => {
+    console.log('running a task every two minute');
+  });
 });
