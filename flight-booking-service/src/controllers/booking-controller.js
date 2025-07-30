@@ -1,11 +1,24 @@
 const { StatusCodes } = require('http-status-codes');
 
 const { BookingService } = require('../services/index');
+const { createChannel, publishMessage } = require('../utility/messageQueue');
+const { REMINDER_BINDING_KEY } = require('../config/server-config');
 
 const bookingService = new BookingService();
 
 
-    async function createBooking (req, res) {
+class BookingController {
+
+    async sendMessageToQueue (req, res) {
+        const channel = await createChannel();
+        const data = {messages: "Success"};
+        publishMessage(channel, REMINDER_BINDING_KEY, JSON.stringify(data));
+        return res.status(200).json({
+            message: "Successfully published the event",
+        })
+    }
+
+    async createBooking (req, res) {
         try {
             console.log("here is the body " , req.body);
             const response = await bookingService.createBooking(req.body);
@@ -26,7 +39,5 @@ const bookingService = new BookingService();
         }
     }
 
-
-module.exports = {
-    createBooking
 }
+module.exports = BookingController;
